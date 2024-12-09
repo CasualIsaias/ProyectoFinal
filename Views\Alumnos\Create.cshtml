@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Alumnos > Crear";
+}
+
+@model Domain.Alumno
+
+<h1>
+    Insertar:
+</h1>
+
+<form asp-action="Create" enctype="multipart/form-data">
+    Nombre: <input asp-for="Nombre" required />
+    <br />
+    Edad: <input asp-for="Edad" required />
+    <br />
+    Promedio: <input asp-for="Promedio" required />
+    <br />
+    Foto: <input type="file" name="file" accept=".jpg,.png,.jpeg,.gif" />
+    <br />
+    <button>Insertar</button>
+</form>
+
+<a asp-action="Index">Cancelar</a>
