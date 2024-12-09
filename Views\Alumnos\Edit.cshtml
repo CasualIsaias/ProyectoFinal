@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Alumnos > Editar";
+}
+@model Domain.Alumno
+<h1>
+    Actualizar:
+</h1>
+<form asp-action="Edit" enctype="multipart/form-data">
+    <input asp-for="Id" type="hidden" required />
+    <input asp-for="Foto" type="hidden" required />
+    Nombre: <input asp-for="Nombre" class="form-control" required />
+    <br />
+    Edad: <input asp-for="Edad" class="form-control" required />
+    <br />
+    Promedio: <input asp-for="Promedio" class="form-control" required />
+    <br />
+    <img src="@Model.Foto" class="img-thumbnail" />
+    <br />
+    Foto: <input type="file" name="file" class="form-control-file" accept=".jpg,.png,.jpeg,.gif" />
+    <br />
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
