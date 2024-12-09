@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Alumnos";
+}
+
+@model List<Domain.Alumno>
+
+<!-- Estilos para DataTables -->
+<link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css">
+
+<div class="text-right mb-3">
+    <a asp-action="Create" class="btn btn-success">Crear Nuevo</a>
+</div>
+
+<h1 class="text-center">Alumnos</h1>
+
+<table id="myTable" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Edad</th>
+            <th>Promedio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.Id.ToString().Substring(0,8)</td>
+                <td>@e.Nombre</td>
+                <td>@e.Edad</td>
+                <td>@e.Promedio</td>
+                <td>
+                    <a href="javascript:void(0)" onclick="details('@e.Id')" class="btn btn-info btn-sm">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@e.Id" class="btn btn-primary btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@e.Id" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?');">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal para detalles -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles del Alumno</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="detailsModalContent" class="modal-body">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <!-- Scripts de DataTables -->
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Inicializa DataTables con exportación
+            var table = $('#myTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Exportar a Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Exportar a PDF'
+                    }
+                ]
+            });
+            table.buttons().container()
+                .appendTo('#myTable_wrapper .col-md-6:eq(0)');
+        });
+
+        // Función para cargar detalles dinámicos en el modal
+        function details(id) {
+            $('#detailsModal').modal('show'); // Abre el modal
+            $.ajax({
+                url: '/Alumnos/Details/' + id, // URL al controlador
+                method: 'GET',
+                success: function (data) {
+                    $('#detailsModalContent').html(data); // Carga el contenido en el modal
+                },
+                error: function () {
+                    $('#detailsModalContent').html('<p>Error al cargar los detalles.</p>');
+                }
+            });
+        }
+    </script>
+}
